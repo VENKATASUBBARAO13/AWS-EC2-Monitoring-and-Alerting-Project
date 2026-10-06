@@ -7,19 +7,44 @@ A hands-on cloud monitoring project demonstrating Linux server metrics collectio
 ## Architecture
 
 ```text
-EC2 node-server
-  └── Node Exporter (:9100)
-         │ metrics scrape
-         ▼
-EC2 monitoring-server
-  ├── Prometheus (:9090)
-  │     └── Alert rules → PagerDuty (Alertmanager/webhook integration)
-  └── Grafana (:3000)
-        ├── Prometheus data source
-        └── AWS CloudWatch data source
+                              AWS Cloud / VPC
+
+     ┌──────────────────────┐          ┌──────────────────────────────┐
+     │    Monitored EC2     │          │       Monitoring EC2        │
+     │                      │          │                              │
+     │ Linux Host           │          │ Prometheus :9090             │
+     │      │               │          │      │                       │
+     │ Node Exporter :9100  │─────────▶│      ├── Alert rules         │
+     │                      │ /metrics  │      │        │               │
+     └──────────────────────┘          │      ▼        ▼               │
+                                       │ Alertmanager  Grafana :3000  │
+                                       │      │        │      │        │
+                                       └──────┼────────┼──────┼────────┘
+                                              │        │      │
+                                              ▼        │      ▼
+                                          PagerDuty    │  CloudWatch
+                                                       │  data source
+                                                       ▼
+                                                AWS / EC2 metrics
 ```
 
-Prometheus scrapes Node Exporter metrics from the monitored EC2 instance. Grafana visualizes Prometheus and CloudWatch metrics. Alert rules detect an unavailable exporter, high CPU usage, and high disk usage. PagerDuty receives an incident for alert testing and resolution.
+### Monitoring Flow
+
+```text
+Monitored EC2
+     │
+     └── Node Exporter :9100
+             │
+             ▼
+       Prometheus :9090
+             │
+             ├── Alert rules → Alertmanager → PagerDuty
+             │
+             └── Metrics → Grafana :3000
+                            └── CloudWatch data source
+```
+
+See [architecture/architecture.md](architecture/architecture.md) for the detailed flow, alert pipeline, recovery test, and recommended network controls.
 
 ## Features
 
