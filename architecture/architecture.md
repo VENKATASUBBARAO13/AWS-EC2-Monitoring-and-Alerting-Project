@@ -2,31 +2,9 @@
 
 ## Production-style monitoring flow
 
-    AWS Cloud / VPC
-    │
-    ├── Monitored EC2
-    │     └── Linux OS
-    │           └── Node Exporter :9100
-    │                  │
-    │                  │ /metrics
-    │                  ▼
-    └── Monitoring EC2
-          ├── Prometheus :9090
-          │     ├── Scrapes Node Exporter
-          │     └── Evaluates alert_rules.yml
-          │            │
-          │            ▼
-          │       Alertmanager
-          │            │
-          │            ▼
-          │        PagerDuty
-          │
-          └── Grafana :3000
-                ├── Prometheus data source
-                └── CloudWatch data source
-                         │
-                         ▼
-                    Amazon CloudWatch
+![AWS EC2 Monitoring and Alerting Architecture](aws-ec2-monitoring-architecture.svg)
+
+The diagram summarizes the main components and paths. This is a conceptual design, so adapt instance placement, routing, security groups, IAM, and external alert receiver configuration to the deployed environment.
 
 ## Main data flow
 
