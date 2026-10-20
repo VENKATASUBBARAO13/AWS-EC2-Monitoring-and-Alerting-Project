@@ -1,32 +1,8 @@
-# AWS EC2 Monitoring & Alerting with Prometheus, Grafana, Node Exporter, CloudWatch & PagerDuty
-
-A hands-on cloud monitoring project demonstrating Linux server metrics collection, Prometheus alerting, Grafana dashboards, AWS CloudWatch integration, and PagerDuty incident handling.
-
-> **Security note:** This repository intentionally contains no AWS credentials, PagerDuty integration keys, account IDs, or live public IP addresses. Replace placeholders locally and never commit secrets.
-
 ## Architecture
 
-```text
-                              AWS Cloud / VPC
+![AWS EC2 Monitoring and Alerting Architecture](architecture/aws-ec2-monitoring-architecture.svg)
 
-     ┌──────────────────────┐          ┌──────────────────────────────┐
-     │    Monitored EC2     │          │       Monitoring EC2        │
-     │                      │          │                              │
-     │ Linux Host           │          │ Prometheus :9090             │
-     │      │               │          │      │                       │
-     │ Node Exporter :9100  │─────────▶│      ├── Alert rules         │
-     │                      │ /metrics  │      │        │               │
-     └──────────────────────┘          │      ▼        ▼               │
-                                       │ Alertmanager  Grafana :3000  │
-                                       │      │        │      │        │
-                                       └──────┼────────┼──────┼────────┘
-                                              │        │      │
-                                              ▼        │      ▼
-                                          PagerDuty    │  CloudWatch
-                                                       │  data source
-                                                       ▼
-                                                AWS / EC2 metrics
-```
+*High-level reference architecture based on this repository's Prometheus, Node Exporter, Grafana, CloudWatch, Alertmanager, and PagerDuty configuration. Adjust VPC placement, security groups, and IAM permissions to match your deployment.*
 
 ### Monitoring Flow
 
